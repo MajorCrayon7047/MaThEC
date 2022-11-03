@@ -9,38 +9,77 @@ import json
 intents = discord.Intents.all()
 intents.members = True
 
-bot = commands.Bot(command_prefix="m!",intents = intents)
+bot = commands.Bot(command_prefix="m!",intents = intents, help_command=None)
+
+@bot.command()
+async def help(ctx, command=""):
+    if command=="":
+        embed = discord.Embed(
+            title = f"La ayuda ya llego {ctx.message.author.name}",
+            description = "Para tener una descripcion mas extensa de cada comando utilize m!help <comando>",
+            color = 0xAF33FF)
+        embed.add_field(name = "Funcionalidad:", value="- Derivar\n- Factorizar\n- Graficar\n- Limite")
+        embed.add_field(name = "Comando a usar:", value="m!der <funcion>\nm!fac <funcion/expresion>\nm!graph <funcion> <raiz>\nm!lim <funcion> <limite>")
+        embed.add_field(name= "CMD ALT:", value="[der | derivar]\n[fac | factorisar]\n[graph | graficar]\n[lim | limite]")
+        embed.set_author(name=ctx.author.name, icon_url=ctx.message.author.avatar_url)
+        embed.set_thumbnail(url="https://media.discordapp.net/attachments/821538238355210271/1034544524783014009/unknown.png")
+        embed2 = discord.Embed(
+            title = "Help || MaThEC",
+            description = "Este es un bot para poder utilizar metodos matematicos a necesidad del usuario, desarrollado en la ETEC por Nicolas Perez, Lucas Perinetti y Calogero Nicolli. Este es el [GitHub](https://github.com/MajorCrayon7047/MaThEC) del proyecto\n\nPara una explicacion mas detallada de cada comando utilize `m!help <comando>`",
+        )
+        embed2.add_field(name="__Comandos__", value="**m!derivar** - Deriva una funcion\n**m!factorisar** - Factoriza una expresion/funcion\n**m!graph** - grafica una funcion\n**m!limite** - encuentra el limite de la funcion")
+    await ctx.send(embed=embed)
+    await ctx.send(embed=embed2)
 
 def funcion(expresion="x"):
-    lista1 = list(expresion)
-    lista2=[]
-    for i in range(len(lista1)):
-        print("posicion: "+str(i)+" "+str(lista1[i]) + " es digito: " + str(lista1[i].isdigit()) + " es numerico: "+ str(lista1[i].isnumeric()) + " es alfanum: "+ str(lista1[i].isalnum()))
+    lista = list(expresion)
+    for i in range(len(lista)):
         try:
-            
-            if lista1[i].isdigit()==false  and lista1[i].isnumeric() == false  and  lista1[i].isalnum(): 
-                print("entro")
-                if i > 0:
-                    print("entro1")
-                    if lista1[i-1].isdigit():
-                        print("entro2") 
-                        lista2.append(str("*") )  
-                lista2.append(str("(x)"))
-                if i < len(lista1):
-                    if lista1[i+1].isdigit():
-                        print("entro2") 
-                        lista2.append(str("*")) 
-            else:
-                 lista2.append(str(lista1[i]) )  
-                 print("entro3")
+            if lista[i] == "∧" or lista[i] == "‸" or lista[i] == "^": lista[i] = "**"
+            if lista[i].isdigit() == false and lista[i].isnumeric()  == false and lista[i].isalnum():
+                if lista[i] == "X": lista[i] = "(x)"
+                elif lista[i] == "x": lista[i] = "(x)"
+                if lista[i] == "Y": lista[i] = "(y)"
+                elif lista[i] == "y": lista[i] = "(y)"
+                if lista[i] == "Z": lista[i] = "(z)"
+                elif lista[i] == "z": lista[i] = "(z)"
+                if i>0 and lista[i-1].isdigit(): lista[i-1]+="*"
+                if i<len(lista) and lista[i+1].isdigit(): lista[i]+="*"
         except:
             pass
-    print(lista2)
-    a=""
-    for u in range(len(lista2)):
-        a = str(a) + str(lista2[u])
-    print(a)
-    return str(a)
+    a = "".join(lista)
+    return a
+
+#def funcion(expresion="x"):
+#    lista1 = list(expresion)
+#    lista2=[]
+#    for i in range(len(lista1)):
+#        print("posicion: "+str(i)+" "+str(lista1[i]) + " es digito: " + str(lista1[i].isdigit()) + " es numerico: "+ str(lista1[i].isnumeric()) + " es alfanum: "+ str(lista1[i].isalnum()))
+#        try:
+            
+#            if lista1[i].isdigit()==false  and lista1[i].isnumeric() == false  and  lista1[i].isalnum(): 
+#                print("entro")
+#                if i > 0:
+#                    print("entro1")
+#                    if lista1[i-1].isdigit():
+#                        print("entro2") 
+#                        lista2.append(str("*") )  
+#                lista2.append(str("(x)"))
+#                if i < len(lista1):
+#                    if lista1[i+1].isdigit():
+#                        print("entro2") 
+#                        lista2.append(str("*")) 
+#            else:
+#                 lista2.append(str(lista1[i]) )  
+#                 print("entro3")
+#        except:
+#            pass
+#    print(lista2)
+#    a=""
+#    for u in range(len(lista2)):
+#        a = str(a) + str(lista2[u])
+#    print(a)
+#    return str(a)
 
 def graficadormixto(gfuncion ,tipo:str,idisc): # graficador usado para graficar 2 o mas funciones
     xinicio:int = -100
