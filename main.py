@@ -1,34 +1,59 @@
-import discord
-from discord.ext import commands
-from discord import File
+from nextcord.ext import commands
+import nextcord
+from nextcord import File, ButtonStyle, Embed, Color, SelectOption, Intents, Interaction, SlashOption, Member
 from sympy import *
 from pylab import *
 from numpy import arange
 import json
 
-intents = discord.Intents.all()
+intents = Intents.all()
 intents.members = True
 
 bot = commands.Bot(command_prefix="m!",intents = intents, help_command=None)
 
 @bot.command()
 async def help(ctx, command=""):
+    command = command.lower()
     if command=="":
-        embed = discord.Embed(
-            title = f"La ayuda ya llego {ctx.message.author.name}",
-            description = "Para tener una descripcion mas extensa de cada comando utilize m!help <comando>",
-            color = 0xAF33FF)
-        embed.add_field(name = "Funcionalidad:", value="- Derivar\n- Factorizar\n- Graficar\n- Limite")
-        embed.add_field(name = "Comando a usar:", value="m!der <funcion>\nm!fac <funcion/expresion>\nm!graph <funcion> <raiz>\nm!lim <funcion> <limite>")
-        embed.add_field(name= "CMD ALT:", value="[der | derivar]\n[fac | factorisar]\n[graph | graficar]\n[lim | limite]")
-        embed.set_author(name=ctx.author.name, icon_url=ctx.message.author.avatar_url)
-        embed.set_thumbnail(url="https://media.discordapp.net/attachments/821538238355210271/1034544524783014009/unknown.png")
-        embed2 = discord.Embed(
+        embed2 = Embed(
             title = "Help || MaThEC",
-            description = "Este es un bot para poder utilizar metodos matematicos a necesidad del usuario, desarrollado en la ETEC por Nicolas Perez, Lucas Perinetti y Calogero Nicolli. Este es el [GitHub](https://github.com/MajorCrayon7047/MaThEC) del proyecto\n\nPara una explicacion mas detallada de cada comando utilize `m!help <comando>`",
+            description = "Este es un bot para poder utilizar metodos matematicos a necesidad del usuario, desarrollado en la ETEC por Nicolas Perez, Lucas Perinetti y Calogero Nicolli. Este es el [GitHub](https://github.com/MajorCrayon7047/MaThEC) del proyecto\n\nPara utilizar el bot se puede usar el prefijo **`m!`** al principio de cada comando o tambien se puede utilizar con **`/`**. Puede encontrar una explicacion mas detallada de cada comando utilizando `m!help <comando>`",
         )
-        embed2.add_field(name="__Comandos__", value="**m!derivar** - Deriva una funcion\n**m!factorisar** - Factoriza una expresion/funcion\n**m!graph** - grafica una funcion\n**m!limite** - encuentra el limite de la funcion")
-    await ctx.send(embed=embed)
+        embed2.add_field(name="__Comandos__", value="**`m!derivar <funcion>`** - Deriva una funcion\n**`m!factorisar <funcion|expresion>`** - Factorisa una expresion|funcion\n**`m!graph <funcion>`** - grafica una funcion\n**`m!limite <funcion> <limite>`** - encuentra el limite de la funcion\n**`m!integrar <funcion>`** - Integra una funcion\n**`m!resolve <termino|funcion>`** - Resuelve calculos generales")
+        embed2.set_footer(text=f"{ctx.message.author}", icon_url=ctx.message.author.display_avatar)
+    elif command == "der" or command == "derivada" or command == "derivadas" or command == "derivar":
+        embed2 = Embed(
+            title= "Help || Derivadas",
+            description="Es un comando para poder **derivar** una vez la funcion que le demos. El comando se puede utilizar de las 2 siguientes maneras:\n- **`m!der <funcion>`**\n- **`/der <funcion>`**\n\nEste comando se puede llamar usando tanto el termino `der` como el termino `derivar`"
+        )
+    elif command == "factorisar" or command == "fac":
+        embed2 = Embed(
+            title= "Help || Factorisar",
+            description="Es un comando para poder **factorisar** a su minima expresion la funcion que le demos. El comando se puede utilizar de las 2 siguientes maneras:\n- **`m!fac <funcion>`**\n- **`/fac <funcion>`**\n\nEste comando se puede llamar usando tanto el termino `fac` como el termino `factorisar`"
+        )
+    elif command == "graph" or command == "graficar":
+        embed2 = Embed(
+            title= "Help || Graficar",
+            description="Es un comando para poder **graficar** la funcion que le demos. El comando se puede utilizar de las 2 siguientes maneras:\n- **`m!fac <funcion> <punto inicial=0(opcional)> <rango=100(opcional)> <negativo=True(opcional)>`**\n- **`/fac <funcion> <punto inicial=0(opcional)> <rango=100(opcional)> <negativo=True(opcional)>`**\n\nEste comando se puede llamar usando tanto el termino `graph` como el termino `graficar`"
+        )
+    elif command == "limite" or command == "lim":
+        embed2 = Embed(
+            title= "Help || Limite",
+            description="Es un comando para poder **sacar el limite** de la funcion que le demos y el limite que le especifiquemos. El comando se puede utilizar de las 2 siguientes maneras:\n- **`m!lim <funcion> <LIMITE>`**\n- **`/limite <funcion> <LIMITE>`**\n\nEste comando se puede llamar usando tanto el termino `lim` como el termino `limite`"
+        )
+    elif command == "inte" or command == "integrar":
+        embed2 = Embed(
+            title= "Help || Integrar",
+            description="Es un comando para poder **integrar** una vez la funcion que le demos. El comando se puede utilizar de las 2 siguientes maneras:\n- **`m!inte <funcion>`**\n- **`/integrar <funcion>`**\n\nEste comando se puede llamar usando tanto el termino `inte` como el termino `integrar`"
+        )
+    elif command == "resolve" or command == "resolver":
+        embed2 = Embed(
+            title= "Help || Resolver",
+            description="Es un comando para poder **resolver** la funcion que le demos. El comando se puede utilizar de las 2 siguientes maneras:\n- **`m!resolve <funcion>`**\n- **`/resolve <funcion>`**\n\nEste comando se puede llamar usando tanto el termino `resolve` como el termino `resolver`"
+        )
+    elif command == "help":
+        await ctx.send("https://www.youtube.com/watch?v=IPOwCwAFG4Y")
+        return
     await ctx.send(embed=embed2)
 
 def funcion(expresion="x"):
@@ -50,36 +75,6 @@ def funcion(expresion="x"):
     a = "".join(lista)
     return a
 
-#def funcion(expresion="x"):
-#    lista1 = list(expresion)
-#    lista2=[]
-#    for i in range(len(lista1)):
-#        print("posicion: "+str(i)+" "+str(lista1[i]) + " es digito: " + str(lista1[i].isdigit()) + " es numerico: "+ str(lista1[i].isnumeric()) + " es alfanum: "+ str(lista1[i].isalnum()))
-#        try:
-            
-#            if lista1[i].isdigit()==false  and lista1[i].isnumeric() == false  and  lista1[i].isalnum(): 
-#                print("entro")
-#                if i > 0:
-#                    print("entro1")
-#                    if lista1[i-1].isdigit():
-#                        print("entro2") 
-#                        lista2.append(str("*") )  
-#                lista2.append(str("(x)"))
-#                if i < len(lista1):
-#                    if lista1[i+1].isdigit():
-#                        print("entro2") 
-#                        lista2.append(str("*")) 
-#            else:
-#                 lista2.append(str(lista1[i]) )  
-#                 print("entro3")
-#        except:
-#            pass
-#    print(lista2)
-#    a=""
-#    for u in range(len(lista2)):
-#        a = str(a) + str(lista2[u])
-#    print(a)
-#    return str(a)
 
 def graficadormixto(gfuncion ,tipo:str,idisc): # graficador usado para graficar 2 o mas funciones
     xinicio:int = -100
@@ -113,7 +108,7 @@ async def on_ready():
         print("Joined {}".format(guild.name))
 
     print(f'Logueado como {bot.user}')
-    await bot.change_presence(activity=discord.Activity(type = discord.ActivityType.watching, name = "pruebas"))
+    await bot.change_presence(activity=nextcord.Activity(type = nextcord.ActivityType.watching, name = "pruebas"))
 
 @bot.command(pass_context=True ,aliases = ["resolver", "mama" , "res"]) # Funcion que simplemente resuelve la cuenta que le pidas
 async def resolve(ctx: commands.Context, termino:str):
@@ -194,9 +189,9 @@ async def graph(ctx, expresion:str, LIMITE:int = 0 ,  rango = 100 , connegativo:
     plot(listax, listay)
     grid()
     savefig(a:=str(ctx.message.author.id) + ".png")
-    await ctx.send( file= discord.File(a, filename=a))
+    await ctx.send( file= File(a, filename=a))
     
-@bot.command(pass_context=True ,aliases = ["derivar", "ingeayiuda"])
+@bot.command(pass_context=True, aliases = ["derivar", "ingeayiuda"])
 async def der(ctx: commands.Context, funcionaderivar): #funcion que deriva a partir de magia de unicorno
     idisc = ctx.message.author.id
     if "x" in funcionaderivar:
@@ -206,7 +201,7 @@ async def der(ctx: commands.Context, funcionaderivar): #funcion que deriva a par
         y = eval(funcionaderivar)
         yprime = y.diff(x)
         graficadormixto(yprime , "Derivada: " + str(yprime),idisc=idisc)
-        a = discord.File(str(a:=str(ctx.message.author.id) + ".png"), filename=a)
+        a = File(str(a:=str(ctx.message.author.id) + ".png"), filename=a)
         b = "F(x)=" + str(funcionaderivar) +"\nF'(x)=" + str(yprime)
         clf()
         await ctx.send(content=b ,file=a)
@@ -223,8 +218,8 @@ async def inte(ctx: commands.Context, funcionaintegrar:str): #funcion que deriva
         y = eval(funcionaintegrar)
         yprime = y.integrate(x)
         graficadormixto(yprime , "Integral: " + str(yprime),idisc) 
-        imagen = discord.File(a:=str(str(idisc) + ".png"), filename=a)
-        respuesta = "F(x)=" + str(funcionaintegrar) +"\nF'(x)=" + str(yprime)
+        imagen = File(a:=str(str(idisc) + ".png"), filename=a)
+        respuesta = "f(x)=" + str(funcionaintegrar) +"\nF(x)=" + str(yprime)
         clf()
         await ctx.send(content=respuesta ,file=imagen)
     else:
