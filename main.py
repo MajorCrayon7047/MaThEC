@@ -120,7 +120,7 @@ async def resolve(ctx: commands.Context, termino:str):
             if termino[i].isalpha():
                 nomehackes=false
         if nomehackes:
-            await ctx.send("El resultado es: " + str(eval(termino)))
+            await ctx.send("El resultado es: **" + str(eval(termino))+"**")
         else:
             await ctx.send("El resultado es: tu puta madre")
     except:
@@ -242,8 +242,8 @@ async def inte(ctx: commands.Context, funcionaintegrar:str): #funcion que deriva
         await ctx.send(":X:Se require que en la funcincion con x como variable independiente:X:")
 
 #-------------------------------SLASH COMMANDS--------------------------------------
-@bot.slash_command(guild_ids=[818657386004217856])
-async def help(ctx: nextcord.Interaction, command: str = SlashOption(name="command", required=False)):
+@bot.slash_command(description="Ayuda con mis comandos ^_~")
+async def help(ctx: nextcord.Interaction, command: str = SlashOption(name="command", required=False, choices={"Derivar":"derivar", "Factorizar":"factorisar", "Graficar":"graficar", "Limite":"limite", "Integrar":"integrar", "Resolver":"resolver"})):
     if command==None:
         embed2 = Embed(
             title = "Help || MaThEC",
@@ -287,22 +287,22 @@ async def help(ctx: nextcord.Interaction, command: str = SlashOption(name="comma
     await ctx.send(embed=embed2)
 
 
-@bot.slash_command(guild_ids=[818657386004217856])
-async def resolver(ctx: nextcord.Interaction, termino: str):
+@bot.slash_command(description="Te ayudo a resolver terminos :D")
+async def resolver(ctx: nextcord.Interaction, termino: str = SlashOption(name="termino", description="Termino a resolver ^_^")):
     try:
         nomehackes=true
         for i in range(len(termino)):
             if termino[i].isalpha():
                 nomehackes=false
         if nomehackes:
-            await ctx.response.send_message("El resultado es: " + str(eval(termino)))
+            await ctx.response.send_message("El resultado es: **" + str(eval(termino))+"**")
         else:
             await ctx.response.send_message("El resultado es: tu puta madre")
     except:
         await ctx.response.send_message("Algo salio mal lo lamento, recuerda solo escribir el calculo sin letras")
 
-@bot.slash_command(guild_ids=[818657386004217856])
-async def factorisar(ctx: nextcord.Interaction, expresion: str): #funcion que simplemente se encarga de factorisar una funcion
+@bot.slash_command(description="Te ayudo a factorisar ^0^")
+async def factorisar(ctx: nextcord.Interaction, expresion: str = SlashOption(name="expresion", description="Expresion a factorisar ༼ つ ◕_◕ ༽つ")): #funcion que simplemente se encarga de factorisar una funcion
     expresion = expresion.replace("`", "")
     expresion = expresion.replace(" ", "")
     x = symbols("x")
@@ -311,8 +311,8 @@ async def factorisar(ctx: nextcord.Interaction, expresion: str): #funcion que si
 
     await ctx.response.send_message(f"**Expresion Ingresada:** `{expresion}`\n**Expresion extendida/desglozada:** `{expand(expresionfactorisada)}`\n**Expresion comprimida:** `{factor(expresionfactorisada)}`")
 
-@bot.slash_command(guild_ids=[818657386004217856])
-async def derivar(ctx: nextcord.Interaction, funcionaderivar: str):
+@bot.slash_command(description="Te derivo en un orden una funcion ^.^")
+async def derivar(ctx: nextcord.Interaction, funcionaderivar: str = SlashOption(name="funcionaderivar", description="Funcion a derivar 〜(￣▽￣〜)")):
     idisc = ctx.user.id
     if "x" in funcionaderivar:
         x = Symbol("x")
@@ -332,8 +332,8 @@ async def derivar(ctx: nextcord.Interaction, funcionaderivar: str):
     else:
         await ctx.send(":X:Se require que en la funcincion con x como variable independiente:X:")
 
-@bot.slash_command(guild_ids=[818657386004217856])
-async def integrar(ctx: commands.Context, funcionaintegrar:str): #funcion que deriva a partir de magia de unicorno
+@bot.slash_command(description="Te integro una funcion en un orden :)")
+async def integrar(ctx: commands.Context, funcionaintegrar:str = SlashOption(name="funcionaintegrar", description="Funcion a integrar =￣ω￣=")): #funcion que deriva a partir de magia de unicorno
     idisc = ctx.user.id
     if "x" in funcionaintegrar:
         funcionaintegrar = funcion(expresion=funcionaintegrar)
@@ -354,8 +354,8 @@ async def integrar(ctx: commands.Context, funcionaintegrar:str): #funcion que de
         await ctx.send(":X:Se require que en la funcincion con x como variable independiente:X:")
 
 
-@bot.slash_command(guild_ids=[818657386004217856])
-async def limite(ctx: nextcord.Interaction, expresion:str = SlashOption(name="expresion"), LIMITE:float = SlashOption(name="limite")): # funcion que calcula limite
+@bot.slash_command(description="Te busco el limite que me digas en la funcion que tu quieras (/≧▽≦)/")
+async def limite(ctx: nextcord.Interaction, expresion:str = SlashOption(name="expresion", description="Expresion de la cual se va a buscar el limite"), LIMITE:float = SlashOption(name="limite", description="Limite a encontrar (ง •_•)ง")): # funcion que calcula limite
     #LIMITE = float(LIMITE.rstrip("`"))
     expresion = funcion(expresion=expresion)
     expresion2 = expresion
@@ -395,8 +395,8 @@ async def limite(ctx: nextcord.Interaction, expresion:str = SlashOption(name="ex
         print(e)
         await ctx.response.send_message(":x: **Ups! Tuve problemas para analizar la funcion, porfavor vuelva a introducir la funcion, verifique que haya especificado el limite o que el denominador de la funcion no sea un cero inamovible** :x:")
 
-@bot.slash_command(guild_ids=[818657386004217856])
-async def graficar(ctx: nextcord.Interaction, expresion:str = SlashOption(name="expresion"), LIMITE:int = SlashOption(name="limite", required=False), rango: int = SlashOption(name="rango", required=False), connegativo: bool = SlashOption(name="con_negativo", required=False)): # funcion encargada de graficar una funcion
+@bot.slash_command(description="Te ayudo a Graficar una funcion dada (>'-'<)")
+async def graficar(ctx: nextcord.Interaction, expresion:str = SlashOption(name="expresion", description="Funcion a graficar ψ(._. )>"), LIMITE:int = SlashOption(name="limite", required=False, description="Punto de inicio de la grafica (opcional)"), rango: int = SlashOption(name="rango", required=False, description="El valor de los extremos del grafico (opcional)"), connegativo: bool = SlashOption(name="con_negativo", required=False, description="Poner en True o False dependiendo de si quiere parte negativa")): # funcion encargada de graficar una funcion
     if LIMITE==None: LIMITE = 0
     if rango == None: rango = 100
     if connegativo == None: connegativo = True
